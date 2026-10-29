@@ -21,8 +21,11 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Plan
+        run: |
+          terraform plan \
+            -var-file=tfvars/dashboard.tfvars \
+            -var-file=tfvars/monitors.tfvars
 
       - name: Terraform Destroy
         run: |
