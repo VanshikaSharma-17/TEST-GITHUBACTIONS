@@ -1,12 +1,19 @@
-name: test-githubaction
+name: Terraform Actions
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      terraform_action:
+        description: "Select Terraform Action"
+        required: true
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
 
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
 
     env:
@@ -23,13 +30,11 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Format
-        run: terraform fmt -check -recursive
-
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
+        if: ${{ github.event.inputs.terraform_action == 'plan' }}
         run: |
           terraform plan \
             -var-file=tfvars/dashboard.tfvars \
@@ -37,7 +42,88 @@ jobs:
             -out=tfplan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        if: ${{ github.event.inputs.terraform_action == 'apply' }}
+        run: |
+          terraform plan \
+            -var-file=tfvars/dashboard.tfvars \
+            -var-file=tfvars/monitors.tfvars \
+            -out=tfplan
 
-      - name: Check State
-        run: terraform state list
+          terraform apply -auto-approve tfplan
+
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.terraform_action == 'destroy' }}
+        run: |
+          terraform destroy -auto-approve \
+            -var-file=tfvars/dashboard.tfvars \
+            -var-file=tfvars/monitors.tfvars
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: test-githubaction
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     env:
+#       TF_VAR_api_key: ${{ secrets.DD_API_KEY }}
+#       TF_VAR_app_key: ${{ secrets.DD_APP_KEY }}
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v4
+
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v3
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Format
+#         run: terraform fmt -check -recursive
+
+#       - name: Terraform Validate
+#         run: terraform validate
+
+#       - name: Terraform Plan
+#         run: |
+#           terraform plan \
+#             -var-file=tfvars/dashboard.tfvars \
+#             -var-file=tfvars/monitors.tfvars \
+#             -out=tfplan
+
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve tfplan
+
+#       - name: Check State
+#         run: terraform state list
+
+
+
+
+
+
+
+
+
