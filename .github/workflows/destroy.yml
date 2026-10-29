@@ -1,11 +1,12 @@
 name: Terraform Destroy
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   destroy:
     runs-on: ubuntu-latest
+
     env:
       TF_VAR_api_key: ${{ secrets.DD_API_KEY }}
       TF_VAR_app_key: ${{ secrets.DD_APP_KEY }}
@@ -15,10 +16,11 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-      -  name: Terraform Destroy
-    run: |
-      terraform destroy -auto-approve \
-        -var-file=tfvars/dashboard.tfvars \
-        -var-file=tfvars/monitors.tfvars
+      - name: Terraform Destroy
+        run: |
+          terraform destroy -auto-approve \
+            -var-file=tfvars/dashboard.tfvars \
+            -var-file=tfvars/monitors.tfvars
