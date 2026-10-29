@@ -32,3 +32,6 @@ jobs:
           terraform destroy -auto-approve \
             -var-file=tfvars/dashboard.tfvars \
             -var-file=tfvars/monitors.tfvars
+            
+      - name: Check State
+        run: terraform state list
