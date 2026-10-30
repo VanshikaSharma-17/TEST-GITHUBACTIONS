@@ -90,9 +90,7 @@ jobs:
 #   deploy:
 #     runs-on: ubuntu-latest
 
-#     env:
-#       TF_VAR_api_key: ${{ secrets.DD_API_KEY }}
-#       TF_VAR_app_key: ${{ secrets.DD_APP_KEY }}
+#     
 
 #     steps:
 #       - name: Checkout Code
