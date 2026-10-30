@@ -12,6 +12,10 @@ module "monitors" {
 
 
 
-
-
-
+terraform {
+  backend "s3" {
+    bucket = "terraform.state-test"
+    key    = "datadog/terraform.tfstate"
+    region = "ap-south-1"
+  }
+}
